@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>準備中です</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #050608;
+      --card-bg: #111318;
+      --accent: #36e1ff;
+      --text-main: #f5f5f5;
+      --text-sub: #a0a4b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1b1f33 0, #050608 50%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Helvetica Neue", Arial, "Yu Gothic", "游ゴシック体", "YuGothic",
+        "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    }
+
+    .card {
+      position: relative;
+      max-width: 420px;
+      width: 90%;
+      padding: 32px 26px;
+      background: linear-gradient(135deg, #131520 0%, #090b10 60%, #141824 100%);
+      border-radius: 18px;
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+    }
+
+    .card::before {
+      /* うっすら光るリング */
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        conic-gradient(from 210deg,
+          transparent 0deg,
+          rgba(54, 225, 255, 0.5) 30deg,
+          transparent 60deg);
+      opacity: 0.13;
+      mix-blend-mode: screen;
+      animation: spin 12s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(54, 225, 255, 0.4);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-sub);
+      margin-bottom: 18px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(54, 225, 255, 0.8);
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.4);
+        opacity: 0.5;
+      }
+    }
+
+    h1 {
+      font-size: 24px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .sub {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+
+    .note {
+      font-size: 11px;
+      color: #70768a;
+      line-height: 1.6;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 12px;
+    }
+
+    .divider {
+      height: 1px;
+      width: 100%;
+      margin: 18px 0 14px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+      );
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="card-inner">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        <span>PAGE STATUS</span>
+      </div>
+
+      <h1>準備中です</h1>
+
+      <p class="sub">
+        このページは現在、コンテンツを調整中です。<br>
+        後日あらためてアクセスしていただけると嬉しいです。
+      </p>
+
+      <div class="divider"></div>
+
+      <p class="note">
+        ブックマークやスクリーンショットなどは、そのまま残しておいていただいて大丈夫です。<br>
+        公開まで、もうしばらくお待ちください。
+      </p>
+    </div>
+  </main>
+</body>
+</html>
