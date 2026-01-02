@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RIKEOKA / OFFLINE ACCESS</title>
+  <style>
+    :root{
+      --fg:#fff;
+      --muted:rgba(255,255,255,.72);
+      --glass:rgba(0,0,0,.35);
+      --glass2:rgba(0,0,0,.55);
+      --accent:#ff2b2b;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--fg);
+      font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      min-height:100svh;
+      background:#000;
+    }
+    .bg{
+      position:fixed; inset:0;
+      background:url("./material/background.png") center/cover no-repeat;
+      filter:saturate(1.05) contrast(1.05);
+      transform:scale(1.02);
+    }
+    .bg::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(1200px 600px at 50% 0%, rgba(0,0,0,.35), rgba(0,0,0,.75)),
+        linear-gradient(to bottom, rgba(0,0,0,.45), rgba(0,0,0,.85));
+    }
+
+    main{ position:relative; padding:18px 14px 28px; max-width:900px; margin:0 auto; }
+    header{
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius);
+      padding:14px 14px 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 35px rgba(0,0,0,.35);
+    }
+    .toprow{display:flex; gap:12px; align-items:center; justify-content:space-between;}
+    .brand{display:flex; gap:10px; align-items:center;}
+    .brand img{width:36px; height:36px; border-radius:10px;}
+    .badge{
+      font-size:12px; color:var(--muted);
+      border:1px solid rgba(255,255,255,.12);
+      padding:6px 10px; border-radius:999px;
+      background:rgba(0,0,0,.25);
+    }
+
+    .logoWrap{ margin-top:12px; display:grid; gap:10px; justify-items:center; }
+    .logo{
+      width:min(520px, 92%);
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.5));
+      animation: glitch 6s infinite;
+    }
+    .catch{
+      width:min(680px, 96%);
+      opacity:.95;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.55));
+      animation: creep 3.2s infinite;
+      transform-origin:center;
+    }
+
+    /* 横スクロールキャラ */
+    .rail{
+      margin-top:14px;
+      display:flex; gap:10px;
+      overflow:auto; padding:8px 4px 2px;
+      scroll-snap-type:x mandatory;
+    }
+    .card{
+      flex:0 0 auto;
+      scroll-snap-align:start;
+      width:150px;
+      border-radius:16px;
+      background:var(--glass2);
+      border:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+      padding:10px;
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .card:active{ transform:scale(.98); }
+    .card:hover{ transform:translateY(-2px); border-color:rgba(255,255,255,.25); }
+    .card .cimg{ width:100%; aspect-ratio:1/1; object-fit:contain; }
+    .card .name{ width:100%; margin-top:8px; opacity:.95; }
+
+    .panel{
+      margin-top:12px;
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius);
+      padding:14px;
+      backdrop-filter: blur(10px);
+    }
+    .panel h2{ margin:0 0 8px; font-size:14px; letter-spacing:.06em; color:var(--muted); }
+    .fortune{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px 12px;
+      border-radius:14px;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .fortune .k{ font-size:12px; color:var(--muted); }
+    .fortune .v{ font-size:18px; font-weight:800; }
+    .fortune .v b{ color:var(--accent); }
+
+    .cta{
+      margin-top:12px;
+      display:block;
+      text-decoration:none;
+      color:var(--fg);
+      border-radius:20px;
+      padding:14px 14px;
+      background: linear-gradient(135deg, rgba(255,43,43,.95), rgba(255,255,255,.08));
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      text-align:center;
+      font-weight:900;
+      letter-spacing:.08em;
+      position:relative;
+      overflow:hidden;
+    }
+    .cta::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle, rgba(255,255,255,.25), transparent 55%);
+      transform: translateX(-60%);
+      animation: sweep 3.2s infinite;
+    }
+    .cta span{ position:relative; }
+    footer{ margin-top:14px; text-align:center; font-size:12px; color:rgba(255,255,255,.55); }
+
+    @keyframes creep{
+      0%,100%{ transform: translateY(0) rotate(0deg); filter: drop-shadow(0 10px 20px rgba(0,0,0,.55)); }
+      45%{ transform: translateY(1px) rotate(.15deg); }
+      50%{ transform: translateY(-1px) rotate(-.2deg); }
+      55%{ transform: translateY(1px) rotate(.12deg); }
+    }
+    @keyframes glitch{
+      0%,100%{ transform: translateX(0); opacity:1; }
+      92%{ transform: translateX(0); }
+      93%{ transform: translateX(-1px); opacity:.95; }
+      94%{ transform: translateX(1px); opacity:1; }
+      95%{ transform: translateX(0); }
+    }
+    @keyframes sweep{
+      0%{ transform: translateX(-60%) rotate(15deg); }
+      60%{ transform: translateX(40%) rotate(15deg); }
+      100%{ transform: translateX(60%) rotate(15deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+
+  <main>
+    <header>
+      <div class="toprow">
+        <div class="brand">
+          <img src="./material/ch-logo.png" alt="ch" />
+          <div class="badge">RIKEOKA / OFF会 特典ページ</div>
+        </div>
+        <div class="badge" id="countBadge">ACCESS: 1</div>
+      </div>
+
+      <div class="logoWrap">
+        <img class="logo" src="./material/RIKEOKA-font.png" alt="RIKEOKA" />
+        <img class="catch" src="./material/catchphrase.png" alt="catchphrase" />
+      </div>
+
+      <div class="rail" aria-label="characters">
+        <div class="card">
+          <img class="cimg" src="./material/doppler.png" alt="doppler" loading="lazy">
+          <img class="name" src="./material/dopplerName.png" alt="doppler name" loading="lazy">
+        </div>
+        <div class="card">
+          <img class="cimg" src="./material/infinity.png" alt="infinity" loading="lazy">
+          <img class="name" src="./material/infinityName.png" alt="infinity name" loading="lazy">
+        </div>
+        <div class="card">
+          <img class="cimg" src="./material/pir.png" alt="pir" loading="lazy">
+          <img class="name" src="./material/pirName.png" alt="pir name" loading="lazy">
+        </div>
+        <div class="card">
+          <img class="cimg" src="./material/rk1.png" alt="rk1" loading="lazy">
+          <img class="name" src="./material/rk1Name.png" alt="rk1 name" loading="lazy">
+        </div>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>本日の検証結果（毎日変わる）</h2>
+      <div class="fortune">
+        <div>
+          <div class="k">RIKEOKA SCAN</div>
+          <div class="v" id="fortuneText">霊圧：<b>中</b></div>
+        </div>
+        <div class="k" id="todayText"></div>
+      </div>
+
+      <a class="cta" href="./album.html"><span>▶ OFF会アルバムを開く</span></a>
+    </section>
+
+    <footer>※このページは開発中（index2.html）</footer>
+  </main>
+
+  <script>
+    // 連続アクセス演出（同端末でカウント）
+    const key = "rikeoka_access_count";
+    const c = (parseInt(localStorage.getItem(key) || "0", 10) + 1);
+    localStorage.setItem(key, String(c));
+    document.getElementById("countBadge").textContent = `ACCESS: ${c}`;
+
+    // 日付で固定される軽量ガチャ（毎日変わる）
+    const now = new Date();
+    const seed = now.getFullYear()*10000 + (now.getMonth()+1)*100 + now.getDate();
+    const items = [
+      ["霊圧：<b>極小</b>", "今日は“映り”は薄め…"],
+      ["霊圧：<b>小</b>", "視線に注意"],
+      ["霊圧：<b>中</b>", "声が拾われやすい"],
+      ["霊圧：<b>大</b>", "写真運：強"],
+      ["霊圧：<b>特大</b>", "今日は“ガチ”の日"],
+    ];
+    const idx = seed % items.length;
+    document.getElementById("fortuneText").innerHTML = items[idx][0];
+    document.getElementById("todayText").textContent = items[idx][1];
+  </script>
+</body>
+</html>
