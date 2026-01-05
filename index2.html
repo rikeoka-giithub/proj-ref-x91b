@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RIKEOKA / OFF会 特典ページ</title>
+  <title>RIKEOKA / オフ会 特典ページ</title>
 
   <style>
     :root{
@@ -235,130 +235,6 @@
       gap: 12px;
     }
 
-    /* ★ ボタン化：押せる感（面・光・矢印・発光） */
-    .heroBtn{
-      appearance:none;
-      border: 1px solid rgba(255,255,255,.18);
-      background:
-        radial-gradient(120% 120% at 20% 20%, rgba(255,255,255,.10), transparent 55%),
-        linear-gradient(to bottom, rgba(255,255,255,.06), rgba(0,0,0,.35));
-      color:#fff;
-      padding: 12px 14px;
-      border-radius: 14px;
-
-      display:grid;
-      grid-template-columns: 1fr auto;
-      align-items:center;
-      column-gap: 12px;
-
-      cursor:pointer;
-      box-shadow:
-        0 12px 34px rgba(0,0,0,.35),
-        0 0 0 1px rgba(255,255,255,.06) inset;
-      position: relative;
-      overflow:hidden;
-
-      transition: transform .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease, filter .12s ease;
-    }
-    .heroBtn::before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,.18) 25%, transparent 55%);
-      transform: translateX(-60%);
-      opacity: 0;
-      transition: opacity .18s ease, transform .35s ease;
-      pointer-events:none;
-    }
-    .heroBtn:hover{
-      border-color: rgba(255,255,255,.28);
-      box-shadow:
-        0 14px 42px rgba(0,0,0,.45),
-        0 0 26px rgba(255,255,255,.10),
-        0 0 0 1px rgba(255,255,255,.08) inset;
-      filter: brightness(1.03);
-    }
-    .heroBtn:hover::before{
-      opacity:.9;
-      transform: translateX(40%);
-    }
-    .heroBtn:active{
-      transform: translateY(1px) scale(.995);
-      box-shadow:
-        0 10px 28px rgba(0,0,0,.40),
-        0 0 0 1px rgba(255,255,255,.08) inset;
-    }
-    .heroBtn:focus-visible{
-      outline: none;
-      box-shadow:
-        0 14px 42px rgba(0,0,0,.45),
-        0 0 0 2px rgba(255,255,255,.22),
-        0 0 26px rgba(255,255,255,.12);
-    }
-
-    /* 未選出の間だけ、微パルスで“押して”を出す */
-    @keyframes ctaPulse {
-      0%,100% { box-shadow: 0 12px 34px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.06) inset; }
-      50%     { box-shadow: 0 14px 40px rgba(0,0,0,.42), 0 0 22px rgba(255,255,255,.10), 0 0 0 1px rgba(255,255,255,.08) inset; }
-    }
-    .heroBtn.is-cta{ animation: ctaPulse 2.2s ease-in-out infinite; }
-
-    .heroLeft{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
-    }
-    .heroIcon{
-      width: 34px; height: 34px;
-      border-radius: 12px;
-      display:grid;
-      place-items:center;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      position: relative;
-      overflow:hidden;
-      flex: 0 0 auto;
-    }
-    .heroIcon::after{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 55%);
-      transform: rotate(20deg);
-    }
-    .heroText{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width:0;
-    }
-    .heroText strong{
-      font-size: 13px;
-      letter-spacing:.04em;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-    .heroText span{
-      font-size: 12px;
-      opacity: .72;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-    .heroRight{
-      justify-self: end;
-      font-size: 12px;
-      opacity: .92;
-      border: 1px solid rgba(255,255,255,.16);
-      padding: 7px 11px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.26);
-      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset;
-      white-space: nowrap;
-    }
-
     .heroCard{
       border-radius: 16px;
       background: rgba(0,0,0,.32);
@@ -452,17 +328,17 @@
       100%{ opacity:1; transform: translateY(0) scale(1); }
     }
 
-    .heroScanning .heroIcon{ animation: pulse .7s ease-in-out infinite; }
+    .heroScanning .heroThumb{ animation: pulse .7s ease-in-out infinite; }
     .heroReveal{ animation: glitchIn .55s cubic-bezier(.2,.9,.2,1) forwards; }
 
     @media (max-width: 520px){
-      .catchphrase{ inset: 14% 8%; } /* キャッチを少し内側へ */
+      .catchphrase{ inset: 14% 8%; }
       .corner{
-        width: clamp(72px, 22vw, 140px); /* ← 少しだけ拡大 */
-        z-index: 2; /* キャッチより後ろ */
+        width: clamp(72px, 22vw, 140px);
+        z-index: 2;
       }
       .bl, .br{ width: clamp(72px, 22vw, 140px); }
-    
+
       .tl{ top: 3%; left: 3%; }
       .tr{ top: 3%; right: 3%; }
       .bl{ bottom: 1%; left: 3%; }
@@ -470,7 +346,7 @@
     }
 
     /* =========================
-       OFF会アルバム CTA（旧デザインそのまま移植）
+       オフ会アルバム CTA（旧デザインそのまま移植）
        ========================= */
     .cta{
       margin-top:12px;
@@ -511,7 +387,7 @@
     <div class="topbar">
       <div class="pill">
         <span class="brandDot" aria-hidden="true"></span>
-        <span>RIKEOKA / OFF会 特典ページ</span>
+        <span>RIKEOKA / オフ会 特典ページ</span>
       </div>
     </div>
 
@@ -552,25 +428,13 @@
       </div>
 
       <div class="heroBody" id="heroArea">
-        <button class="heroBtn is-cta" id="heroBtn" type="button">
-          <div class="heroLeft">
-            <div class="heroIcon" aria-hidden="true">✦</div>
-            <div class="heroText">
-              <strong>本日の主役</strong>
-              <span>押すと、4キャラから1体が選ばれます</span>
-            </div>
-          </div>
-          <div class="heroRight" id="heroState">READY <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span></div>
-        </button>
-
         <div class="heroCard" id="heroCard" aria-live="polite">
           <div class="heroRow1">
             <div class="heroChip" id="heroChip">—</div>
-            <div class="heroStatus" id="heroStatus">未選出</div>
+            <div class="heroStatus" id="heroStatus">読み込み中…</div>
           </div>
 
-          <!-- ★未選出は表示しない -->
-          <div class="heroShow heroReveal" id="heroReveal" style="display:none; opacity:0;">
+          <div class="heroShow heroReveal" id="heroReveal" style="display:flex; opacity:0;">
             <div class="heroThumb">
               <img id="heroImg" src="" alt="hero">
             </div>
@@ -588,16 +452,26 @@
     </section>
     <!-- ▲ -->
 
-    <!-- ▼ OFF会アルバム（旧デザインCTA） -->
-    <a class="cta" href="./album.html"><span>▶ OFF会アルバムを開く</span></a>
+    <!-- ▼ オフ会アルバム（旧デザインCTA） -->
+    <a class="cta" href="./album.html"><span>▶ オフ会アルバムを開く</span></a>
 
   </main>
 
   <script>
-    // 起動：四隅アニメ + 日付表示
-    window.addEventListener("load", () => {
+    // 起動：四隅アニメ + 日付表示 + 主役を自動表示
+    window.addEventListener("load", async () => {
       document.getElementById("app").classList.add("play");
       setHeroDate();
+
+      // “読み込み演出”を少し入れてから表示（不要なら消してOK）
+      const heroArea = document.getElementById("heroArea");
+      heroArea.classList.add("heroScanning");
+      await new Promise(r => setTimeout(r, 450));
+
+      const { hero, comment } = getTodayHero();
+      applyHero(hero, comment, true);
+
+      heroArea.classList.remove("heroScanning");
     });
 
     function setHeroDate(){
@@ -691,20 +565,6 @@
       return { hero, comment };
     }
 
-    // UI制御
-    const heroBtn = document.getElementById("heroBtn");
-    const heroArea = document.getElementById("heroArea");
-    const heroState = document.getElementById("heroState");
-
-    const heroChip = document.getElementById("heroChip");
-    const heroStatus = document.getElementById("heroStatus");
-    const heroReveal = document.getElementById("heroReveal");
-    const heroImg = document.getElementById("heroImg");
-    const heroName = document.getElementById("heroName");
-    const heroComment = document.getElementById("heroComment");
-
-    let revealed = false;
-
     function clearStageHighlight(){
       document.querySelectorAll(".corner").forEach(el=>{
         el.classList.remove("is-hero","is-dim");
@@ -723,32 +583,14 @@
       }, 1800);
     }
 
-    heroBtn.addEventListener("click", async () => {
-      // 2回目以降は“呼び出し”（同日同結果）
-      if(revealed){
-        heroState.innerHTML = 'RECALL <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>';
-        const { hero, comment } = getTodayHero();
-        applyHero(hero, comment, false);
-        setTimeout(()=> heroState.innerHTML = 'READY <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>', 700);
-        return;
-      }
-
-      revealed = true;
-      heroBtn.classList.remove("is-cta"); // 押したら“押して”演出は止める
-      heroArea.classList.add("heroScanning");
-      heroState.innerHTML = 'SUMMONING <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>';
-
-      await new Promise(r => setTimeout(r, 950));
-
-      const { hero, comment } = getTodayHero();
-      applyHero(hero, comment, true);
-
-      heroArea.classList.remove("heroScanning");
-      heroState.innerHTML = 'DONE <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>';
-      setTimeout(()=> heroState.innerHTML = 'READY <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>', 900);
-    });
-
     function applyHero(hero, comment, withAnim){
+      const heroChip = document.getElementById("heroChip");
+      const heroStatus = document.getElementById("heroStatus");
+      const heroReveal = document.getElementById("heroReveal");
+      const heroImg = document.getElementById("heroImg");
+      const heroName = document.getElementById("heroName");
+      const heroComment = document.getElementById("heroComment");
+
       heroChip.textContent = `本日は“${hero.name}”が主役`;
       heroStatus.textContent = "選出完了";
 
@@ -757,7 +599,7 @@
       heroName.textContent = hero.name;
       heroComment.textContent = comment;
 
-      // 未選出は表示しない → 選出したら表示
+      // 常に表示（ロード後に出す）
       heroReveal.style.display = "flex";
 
       if(withAnim){
