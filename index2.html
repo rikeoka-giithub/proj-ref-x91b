@@ -235,26 +235,73 @@
       gap: 12px;
     }
 
-    /* ★ここが本命：READY行の“謎スペース”解消 */
+    /* ★ ボタン化：押せる感（面・光・矢印・発光） */
     .heroBtn{
       appearance:none;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.38);
+      border: 1px solid rgba(255,255,255,.18);
+      background:
+        radial-gradient(120% 120% at 20% 20%, rgba(255,255,255,.10), transparent 55%),
+        linear-gradient(to bottom, rgba(255,255,255,.06), rgba(0,0,0,.35));
       color:#fff;
       padding: 12px 14px;
       border-radius: 14px;
 
       display:grid;
-      grid-template-columns: 1fr auto; /* 左・右をきっちり */
+      grid-template-columns: 1fr auto;
       align-items:center;
       column-gap: 12px;
 
       cursor:pointer;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      box-shadow:
+        0 12px 34px rgba(0,0,0,.35),
+        0 0 0 1px rgba(255,255,255,.06) inset;
+      position: relative;
+      overflow:hidden;
+
+      transition: transform .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease, filter .12s ease;
     }
-    .heroBtn:active{ transform: translateY(1px) scale(.995); }
-    .heroBtn:hover{ background: rgba(0,0,0,.48); border-color: rgba(255,255,255,.22); }
+    .heroBtn::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,.18) 25%, transparent 55%);
+      transform: translateX(-60%);
+      opacity: 0;
+      transition: opacity .18s ease, transform .35s ease;
+      pointer-events:none;
+    }
+    .heroBtn:hover{
+      border-color: rgba(255,255,255,.28);
+      box-shadow:
+        0 14px 42px rgba(0,0,0,.45),
+        0 0 26px rgba(255,255,255,.10),
+        0 0 0 1px rgba(255,255,255,.08) inset;
+      filter: brightness(1.03);
+    }
+    .heroBtn:hover::before{
+      opacity:.9;
+      transform: translateX(40%);
+    }
+    .heroBtn:active{
+      transform: translateY(1px) scale(.995);
+      box-shadow:
+        0 10px 28px rgba(0,0,0,.40),
+        0 0 0 1px rgba(255,255,255,.08) inset;
+    }
+    .heroBtn:focus-visible{
+      outline: none;
+      box-shadow:
+        0 14px 42px rgba(0,0,0,.45),
+        0 0 0 2px rgba(255,255,255,.22),
+        0 0 26px rgba(255,255,255,.12);
+    }
+
+    /* 未選出の間だけ、微パルスで“押して”を出す */
+    @keyframes ctaPulse {
+      0%,100% { box-shadow: 0 12px 34px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.06) inset; }
+      50%     { box-shadow: 0 14px 40px rgba(0,0,0,.42), 0 0 22px rgba(255,255,255,.10), 0 0 0 1px rgba(255,255,255,.08) inset; }
+    }
+    .heroBtn.is-cta{ animation: ctaPulse 2.2s ease-in-out infinite; }
 
     .heroLeft{
       display:flex;
@@ -303,11 +350,12 @@
     .heroRight{
       justify-self: end;
       font-size: 12px;
-      opacity: .8;
-      border: 1px solid rgba(255,255,255,.10);
-      padding: 6px 10px;
+      opacity: .92;
+      border: 1px solid rgba(255,255,255,.16);
+      padding: 7px 11px;
       border-radius: 999px;
-      background: rgba(0,0,0,.22);
+      background: rgba(0,0,0,.26);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset;
       white-space: nowrap;
     }
 
@@ -463,7 +511,7 @@
       </div>
 
       <div class="heroBody" id="heroArea">
-        <button class="heroBtn" id="heroBtn" type="button">
+        <button class="heroBtn is-cta" id="heroBtn" type="button">
           <div class="heroLeft">
             <div class="heroIcon" aria-hidden="true">✦</div>
             <div class="heroText">
@@ -471,7 +519,7 @@
               <span>押すと、4キャラから1体が選ばれます</span>
             </div>
           </div>
-          <div class="heroRight" id="heroState">READY</div>
+          <div class="heroRight" id="heroState">READY <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span></div>
         </button>
 
         <div class="heroCard" id="heroCard" aria-live="polite">
@@ -480,7 +528,7 @@
             <div class="heroStatus" id="heroStatus">未選出</div>
           </div>
 
-          <!-- ★未選出は表示しない：最初は display:none -->
+          <!-- ★未選出は表示しない -->
           <div class="heroShow heroReveal" id="heroReveal" style="display:none; opacity:0;">
             <div class="heroThumb">
               <img id="heroImg" src="" alt="hero">
@@ -633,16 +681,17 @@
     heroBtn.addEventListener("click", async () => {
       // 2回目以降は“呼び出し”（同日同結果）
       if(revealed){
-        heroState.textContent = "RECALL";
+        heroState.innerHTML = 'RECALL <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>';
         const { hero, comment } = getTodayHero();
         applyHero(hero, comment, false);
-        setTimeout(()=> heroState.textContent = "READY", 700);
+        setTimeout(()=> heroState.innerHTML = 'READY <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>', 700);
         return;
       }
 
       revealed = true;
+      heroBtn.classList.remove("is-cta"); // 押したら“押して”演出は止める
       heroArea.classList.add("heroScanning");
-      heroState.textContent = "SUMMONING";
+      heroState.innerHTML = 'SUMMONING <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>';
 
       await new Promise(r => setTimeout(r, 950));
 
@@ -650,12 +699,11 @@
       applyHero(hero, comment, true);
 
       heroArea.classList.remove("heroScanning");
-      heroState.textContent = "DONE";
-      setTimeout(()=> heroState.textContent = "READY", 900);
+      heroState.innerHTML = 'DONE <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>';
+      setTimeout(()=> heroState.innerHTML = 'READY <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>', 900);
     });
 
     function applyHero(hero, comment, withAnim){
-      // chip は要望通り「本日は“<キャラ名>”が主役」
       heroChip.textContent = `本日は“${hero.name}”が主役`;
       heroStatus.textContent = "選出完了";
 
