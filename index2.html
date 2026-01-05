@@ -196,6 +196,40 @@
       .corner{ width: 34vw; }
       .catchphrase{ inset: 12% 6%; }
     }
+
+    /* タイトル横並び */
+    .titleRow{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 3vw, 28px);
+    }
+    
+    /* ch-logo 側 */
+    .titleLogo{
+      width: clamp(64px, 10vw, 110px);
+      height: auto;
+      filter:
+        drop-shadow(0 0 18px rgba(255,255,255,.25))
+        drop-shadow(0 12px 28px rgba(0,0,0,.6));
+    }
+    
+    /* RIKEOKA-font 側 */
+    .titleText{
+      width: min(420px, 70vw);
+      height: auto;
+      filter: drop-shadow(0 14px 30px rgba(0,0,0,.6));
+    }
+    
+    /* モバイル微調整 */
+    @media (max-width: 520px){
+      .titleRow{
+        gap: 12px;
+      }
+      .titleLogo{
+        width: 56px;
+      }
+    }
   </style>
 </head>
 
@@ -211,8 +245,9 @@
       <div class="pill">ACCESS: <span id="accessCount">4</span></div>
     </div>
 
-    <div class="title">
-      <img src="./material/RIKEOKA-font.png" alt="RIKEOKA">
+    <div class="title titleRow">
+      <img class="titleLogo" src="./material/ch-logo.png" alt="RIKEOKA channel logo">
+      <img class="titleText" src="./material/RIKEOKA-font.png" alt="RIKEOKA">
     </div>
 
     <section class="stage" aria-label="catchphrase stage">
