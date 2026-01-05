@@ -25,7 +25,6 @@
       overflow-x:hidden;
     }
 
-    /* 背景（暗すぎ対策：少し明るく＋コントラスト） */
     .bg{
       position:fixed; inset:0;
       background:
@@ -92,7 +91,6 @@
       filter: drop-shadow(0 14px 30px rgba(0,0,0,.6));
     }
 
-    /* ここが「catchphraseステージ」 */
     .stage{
       position:relative;
       width:100%;
@@ -119,7 +117,6 @@
       opacity:.98;
     }
 
-    /* 四隅キャラの「グループ」 */
     .corner{
       position:absolute;
       width: clamp(140px, 20vw, 220px);
@@ -128,6 +125,7 @@
       transform: translate3d(0,0,0);
       will-change: transform, opacity;
       pointer-events:none;
+      transition: filter .25s ease, transform .25s ease;
     }
     .corner .char{
       width: 100%;
@@ -136,14 +134,12 @@
       filter: drop-shadow(0 18px 36px rgba(0,0,0,.65));
     }
 
-    /* 四隅の基本位置 */
     .tl{ top: 5%; left: 5%; }
     .tr{ top: 5%; right: 5%; }
     .bl{ bottom: 2%; left: 4%; }
     .br{ bottom: 2%; right: 4%; }
     .bl, .br{ width: clamp(130px, 18vw, 200px); }
 
-    /* アニメ：外 → 内 + フェードイン（方向別） */
     @keyframes inTL {
       0%   { opacity:0; transform: translate(-28px,-18px) scale(.98); filter: blur(1px); }
       60%  { opacity:1; transform: translate(2px,1px) scale(1.01); filter: blur(0px); }
@@ -165,23 +161,31 @@
       100% { opacity:1; transform: translate(0,0) scale(1); }
     }
 
-    /* “躍動感”として最後に微妙な揺れ（軽い） */
     @keyframes floaty {
       0%,100% { transform: translate(0,0); }
       50% { transform: translate(0,-4px); }
     }
 
-    /* 起動時に順番に出す（delay） */
     .play .tl{ animation: inTL .75s cubic-bezier(.2,.9,.2,1) .05s forwards, floaty 3.8s ease-in-out 1.0s infinite; }
     .play .tr{ animation: inTR .75s cubic-bezier(.2,.9,.2,1) .18s forwards, floaty 4.2s ease-in-out 1.1s infinite; }
     .play .bl{ animation: inBL .75s cubic-bezier(.2,.9,.2,1) .32s forwards, floaty 3.6s ease-in-out 1.2s infinite; }
     .play .br{ animation: inBR .75s cubic-bezier(.2,.9,.2,1) .46s forwards, floaty 4.6s ease-in-out 1.3s infinite; }
 
+    /* ▼主役の強調（軽く光らせる） */
+    .corner.is-hero{
+      filter: drop-shadow(0 0 18px rgba(255,255,255,.18));
+      transform: scale(1.03);
+    }
+    .corner.is-dim{
+      filter: grayscale(.35) brightness(.85);
+      transform: scale(.98);
+      opacity: 1; /* 既に表示されてるので維持 */
+    }
+
     /* =========================
-       ここから：案A「本日の検出ログ」
-       既存レイアウトは崩さず、下に1ブロック追加
+       追加：本日の主役（カード）
        ========================= */
-    .logWrap{
+    .heroWrap{
       margin-top: 14px;
       border-radius: 18px;
       background: rgba(0,0,0,.22);
@@ -189,8 +193,7 @@
       overflow:hidden;
       position: relative;
     }
-
-    .logHead{
+    .heroHead{
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -199,23 +202,20 @@
       border-bottom: 1px solid rgba(255,255,255,.08);
       background: linear-gradient(to bottom, rgba(255,255,255,.05), transparent);
     }
-
-    .logTitle{
+    .heroTitle{
       display:flex;
       align-items:center;
       gap:10px;
       min-width: 0;
     }
-
-    .logBadge{
+    .heroBadge{
       width: 10px;
       height: 10px;
       border-radius: 999px;
       background: rgba(255,255,255,.55);
       box-shadow: 0 0 16px rgba(255,255,255,.18);
     }
-
-    .logTitleText{
+    .heroTitleText{
       font-size: 13px;
       letter-spacing: .05em;
       opacity: .95;
@@ -223,20 +223,19 @@
       overflow:hidden;
       text-overflow: ellipsis;
     }
-
-    .logDate{
+    .heroDate{
       font-size: 12px;
       opacity: .75;
       white-space: nowrap;
     }
 
-    .logBody{
+    .heroBody{
       padding: 14px;
       display:grid;
       gap: 12px;
     }
 
-    .scanBtn{
+    .heroBtn{
       appearance:none;
       border: 1px solid rgba(255,255,255,.16);
       background: rgba(0,0,0,.38);
@@ -251,16 +250,16 @@
       transition: transform .12s ease, background .12s ease, border-color .12s ease;
       box-shadow: 0 10px 30px rgba(0,0,0,.25);
     }
-    .scanBtn:active{ transform: translateY(1px) scale(.995); }
-    .scanBtn:hover{ background: rgba(0,0,0,.48); border-color: rgba(255,255,255,.22); }
+    .heroBtn:active{ transform: translateY(1px) scale(.995); }
+    .heroBtn:hover{ background: rgba(0,0,0,.48); border-color: rgba(255,255,255,.22); }
 
-    .scanLeft{
+    .heroLeft{
       display:flex;
       align-items:center;
       gap:10px;
       min-width:0;
     }
-    .scanIcon{
+    .heroIcon{
       width: 34px; height: 34px;
       border-radius: 12px;
       display:grid;
@@ -270,34 +269,34 @@
       position: relative;
       overflow:hidden;
     }
-    .scanIcon::after{
+    .heroIcon::after{
       content:"";
       position:absolute;
       inset:-40%;
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 55%);
       transform: rotate(20deg);
     }
-    .scanText{
+    .heroText{
       display:flex;
       flex-direction:column;
       gap:2px;
       min-width:0;
     }
-    .scanText strong{
+    .heroText strong{
       font-size: 13px;
       letter-spacing:.04em;
       white-space: nowrap;
       overflow:hidden;
       text-overflow: ellipsis;
     }
-    .scanText span{
+    .heroText span{
       font-size: 12px;
       opacity: .72;
       white-space: nowrap;
       overflow:hidden;
       text-overflow: ellipsis;
     }
-    .scanRight{
+    .heroRight{
       font-size: 12px;
       opacity: .8;
       border: 1px solid rgba(255,255,255,.10);
@@ -307,23 +306,22 @@
       white-space: nowrap;
     }
 
-    .logCard{
+    .heroCard{
       border-radius: 16px;
       background: rgba(0,0,0,.32);
       border: 1px solid rgba(255,255,255,.10);
-      padding: 12px 12px 12px;
+      padding: 12px;
       overflow:hidden;
     }
 
-    .logLine1{
+    .heroRow1{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
-
-    .logChip{
+    .heroChip{
       font-size: 12px;
       opacity: .9;
       padding: 6px 10px;
@@ -332,77 +330,80 @@
       background: rgba(255,255,255,.06);
       white-space: nowrap;
     }
-
-    .logStatus{
+    .heroStatus{
       font-size: 12px;
       opacity: .72;
       white-space: nowrap;
     }
 
-    .logGrid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+    .heroShow{
+      display:flex;
+      align-items:center;
+      gap: 12px;
     }
-
-    .metric{
-      padding: 10px 10px;
-      border-radius: 14px;
+    .heroThumb{
+      width: 84px;
+      height: 84px;
+      border-radius: 16px;
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.04);
-      position: relative;
+      display:grid;
+      place-items:center;
       overflow:hidden;
+      flex: 0 0 auto;
+      position: relative;
     }
-    .metric::after{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,.10), transparent 55%);
-      transform: rotate(-10deg);
-      pointer-events:none;
-    }
-    .metric .k{
-      font-size: 11px;
-      letter-spacing:.08em;
-      opacity:.72;
-      margin-bottom: 4px;
-    }
-    .metric .v{
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing:.02em;
-    }
-    .metric .n{
-      font-size: 12px;
-      opacity:.78;
-      margin-top: 4px;
-      line-height: 1.35;
+    .heroThumb img{
+      width: 90%;
+      height: 90%;
+      object-fit: contain;
+      filter: drop-shadow(0 16px 28px rgba(0,0,0,.55));
+      transform: translateZ(0);
     }
 
-    .logNote{
+    .heroMeta{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .heroName{
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing:.03em;
+    }
+    .heroComment{
+      font-size: 13px;
+      opacity: .86;
+      line-height: 1.5;
+    }
+
+    .heroNote{
       font-size: 12px;
       opacity: .75;
       line-height: 1.55;
+      margin-top: 10px;
     }
 
-    /* スキャン演出 */
-    @keyframes scanPulse {
+    /* 演出 */
+    @keyframes pulse {
       0% { box-shadow: 0 0 0 rgba(255,255,255,.0); }
       50%{ box-shadow: 0 0 22px rgba(255,255,255,.12); }
       100%{ box-shadow: 0 0 0 rgba(255,255,255,.0); }
     }
-    .scanning .scanIcon{
-      animation: scanPulse .7s ease-in-out infinite;
+    @keyframes glitchIn {
+      0% { opacity:0; transform: translateY(6px) scale(.98); filter: blur(1.2px); }
+      60%{ opacity:1; transform: translateY(-1px) scale(1.01); filter: blur(0); }
+      100%{ opacity:1; transform: translateY(0) scale(1); }
     }
-    .scanning .scanRight{
-      opacity: 1;
-    }
-    .hidden{ display:none !important; }
+
+    .heroScanning .heroIcon{ animation: pulse .7s ease-in-out infinite; }
+    .heroReveal{ animation: glitchIn .55s cubic-bezier(.2,.9,.2,1) forwards; }
 
     @media (max-width: 520px){
       .corner{ width: 34vw; }
       .catchphrase{ inset: 12% 6%; }
-      .logGrid{ grid-template-columns: 1fr; }
+      .heroThumb{ width: 76px; height: 76px; }
     }
   </style>
 </head>
@@ -427,78 +428,63 @@
         <img src="./material/catchphrase.png" alt="にガチで挑む 日本唯一の心霊系ch">
       </div>
 
-      <!-- 上：PIR / Doppler -->
-      <div class="corner tl">
+      <div class="corner tl" data-char="pir">
         <img class="char" src="./material/pir.png" alt="PIR">
       </div>
 
-      <div class="corner tr">
+      <div class="corner tr" data-char="doppler">
         <img class="char" src="./material/doppler.png" alt="Doppler">
       </div>
 
-      <!-- 下：RK1 / Infinity -->
-      <div class="corner bl">
+      <div class="corner bl" data-char="rk1">
         <img class="char" src="./material/rk1.png" alt="Nodger RK-1">
       </div>
 
-      <div class="corner br">
+      <div class="corner br" data-char="infinity">
         <img class="char" src="./material/infinity.png" alt="Infinity Cube">
       </div>
     </section>
 
-    <!-- ▼ 追加：本日の検出ログ（案A） -->
-    <section class="logWrap" aria-label="daily log">
-      <div class="logHead">
-        <div class="logTitle">
-          <span class="logBadge" aria-hidden="true"></span>
-          <div class="logTitleText">本日の検出ログ</div>
+    <!-- ▼ 追加：本日の主役 -->
+    <section class="heroWrap" aria-label="today hero">
+      <div class="heroHead">
+        <div class="heroTitle">
+          <span class="heroBadge" aria-hidden="true"></span>
+          <div class="heroTitleText">本日の主役</div>
         </div>
-        <div class="logDate" id="logDate">----</div>
+        <div class="heroDate" id="heroDate">----</div>
       </div>
 
-      <div class="logBody" id="logArea">
-        <button class="scanBtn" id="scanBtn" type="button">
-          <div class="scanLeft">
-            <div class="scanIcon" aria-hidden="true">⌁</div>
-            <div class="scanText">
-              <strong>スキャン開始</strong>
-              <span>今日の反応を解析してログを生成</span>
+      <div class="heroBody" id="heroArea">
+        <button class="heroBtn" id="heroBtn" type="button">
+          <div class="heroLeft">
+            <div class="heroIcon" aria-hidden="true">✦</div>
+            <div class="heroText">
+              <strong>本日の主役</strong>
+              <span>押すと、4キャラから1体が選ばれます</span>
             </div>
           </div>
-          <div class="scanRight" id="scanState">READY</div>
+          <div class="heroRight" id="heroState">READY</div>
         </button>
 
-        <div class="logCard" id="logCard">
-          <div class="logLine1">
-            <div class="logChip" id="logChip">—</div>
-            <div class="logStatus" id="logStatus">未解析</div>
+        <div class="heroCard" id="heroCard" aria-live="polite">
+          <div class="heroRow1">
+            <div class="heroChip" id="heroChip">—</div>
+            <div class="heroStatus" id="heroStatus">未選出</div>
           </div>
 
-          <div class="logGrid">
-            <div class="metric">
-              <div class="k">DOPPLER</div>
-              <div class="v" id="mDoppler">--</div>
-              <div class="n" id="tDoppler">—</div>
+          <div class="heroShow heroReveal" id="heroReveal" style="opacity:0;">
+            <div class="heroThumb">
+              <img id="heroImg" src="./material/pir.png" alt="hero">
             </div>
-            <div class="metric">
-              <div class="k">PIR</div>
-              <div class="v" id="mPir">--</div>
-              <div class="n" id="tPir">—</div>
-            </div>
-            <div class="metric">
-              <div class="k">RK-1</div>
-              <div class="v" id="mRk1">--</div>
-              <div class="n" id="tRk1">—</div>
-            </div>
-            <div class="metric">
-              <div class="k">INFINITY</div>
-              <div class="v" id="mInf">--</div>
-              <div class="n" id="tInf">—</div>
+            <div class="heroMeta">
+              <div class="heroName" id="heroName">—</div>
+              <div class="heroComment" id="heroComment">—</div>
             </div>
           </div>
 
-          <div class="logNote" id="logNote" style="margin-top:10px;">
-            ※「スキャン開始」を押すと、今日の日付に基づいた“日替わりログ”が生成されます。
+          <div class="heroNote" id="heroNote">
+            注釈：「本日の主役は“日替わり固定”です（同じ日は同じ結果／翌日変化）。」
           </div>
         </div>
       </div>
@@ -507,14 +493,14 @@
   </main>
 
   <script>
-    // ページロード後にアニメ開始 + 日付表示
+    // 起動：四隅アニメ + 日付表示
     window.addEventListener("load", () => {
       document.getElementById("app").classList.add("play");
-      setLogDate();
+      setHeroDate();
     });
 
-    function setLogDate(){
-      const el = document.getElementById("logDate");
+    function setHeroDate(){
+      const el = document.getElementById("heroDate");
       const d = new Date();
       const y = d.getFullYear();
       const m = String(d.getMonth()+1).padStart(2,"0");
@@ -522,7 +508,7 @@
       el.textContent = `${y}.${m}.${day}`;
     }
 
-    // 文字列→安定した乱数（軽いハッシュ）
+    // 文字列→安定seed
     function hash32(str){
       let h = 2166136261;
       for(let i=0;i<str.length;i++){
@@ -531,148 +517,167 @@
       }
       return h >>> 0;
     }
-    // 0..1 の疑似乱数
-    function prng(seed){
-      // xorshift32
-      let x = seed || 123456789;
-      x ^= x << 13; x >>>= 0;
-      x ^= x >> 17; x >>>= 0;
-      x ^= x << 5;  x >>>= 0;
-      return (x >>> 0) / 4294967296;
-    }
 
     function todayKey(){
       const d = new Date();
       const y = d.getFullYear();
       const m = String(d.getMonth()+1).padStart(2,"0");
       const day = String(d.getDate()).padStart(2,"0");
-      // 同じ日に同じ結果、翌日変わる
       return `${y}-${m}-${day}`;
     }
 
-    function pick(arr, r){
-      return arr[Math.floor(r * arr.length) % arr.length];
+    function pick(arr, seed){
+      const idx = seed % arr.length;
+      return arr[idx];
     }
 
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-
-    function generateLog(){
-      const seed = hash32("RIKEOKA|" + todayKey());
-      // 4つ分の乱数を作る
-      const r1 = prng(seed);
-      const r2 = prng(seed ^ 0x9e3779b9);
-      const r3 = prng(seed ^ 0x85ebca6b);
-      const r4 = prng(seed ^ 0xc2b2ae35);
-
-      const grade = (x)=>{
-        if(x < .18) return "SILENT";
-        if(x < .42) return "LOW";
-        if(x < .72) return "MID";
-        if(x < .90) return "HIGH";
-        return "MAX";
-      };
-
-      const dop = Math.round( clamp(12 + r1*88, 0, 100) );
-      const pir = Math.round( clamp(10 + r2*90, 0, 100) );
-      const rk1 = Math.round( clamp(8  + r3*92, 0, 100) );
-      const inf = Math.round( clamp(20 + r4*80, 0, 100) );
-
-      const linesD = [
-        "微弱な位相ズレ。人影“っぽさ”は低め。",
-        "反応は素直。動体というより空気の揺れ寄り。",
-        "短いピークが連続。視線を感じる系のノイズ。",
-        "急に落ち着く瞬間あり。来てる/去ってるが混ざる。"
+    // 今日の主役を日替わり固定で決める
+    function getTodayHero(){
+      const seed = hash32("RIKEOKA_HERO|" + todayKey());
+      const chars = [
+        {
+          key:"pir",
+          name:"PIR（気配センサー）",
+          img:"./material/pir.png",
+          chip:"本日は“気配”が主役",
+          comments:[
+            "背後、今ちょっと“空いてない”。…振り向くのは任せる。",
+            "動いてないのに反応する日。つまり“誰か”は動いてる。",
+            "安心して。怖いのは最初だけ。…慣れた頃が一番危ない。",
+            "今日の気配は近い。近いほど、音はしない。"
+          ]
+        },
+        {
+          key:"doppler",
+          name:"Doppler（動体レーダー）",
+          img:"./material/doppler.png",
+          chip:"本日は“揺れ”が主役",
+          comments:[
+            "足音はゼロ。なのに速度だけ出てる。…おかしいね。",
+            "壁の向こうの“動き”が取れる日。壁を信じるな。",
+            "ゆっくり近づく反応。いちばん嫌なやつ。",
+            "止まった瞬間だけ綺麗に反応する。見られてる側かも。"
+          ]
+        },
+        {
+          key:"rk1",
+          name:"Nodger RK-1",
+          img:"./material/rk1.png",
+          chip:"本日は“ノイズ”が主役",
+          comments:[
+            "ノイズが言葉に見えたら、今日は深追い禁止。",
+            "録るほど寄る。寄るほど録れる。…相性が良すぎる日。",
+            "音が“無い”ところに、いちばん情報がある。",
+            "静寂の中だけ反応する。つまり、静寂が嘘。"
+          ]
+        },
+        {
+          key:"infinity",
+          name:"Infinity Cube",
+          img:"./material/infinity.png",
+          chip:"本日は“演出”が主役",
+          comments:[
+            "派手に光る日は、だいたい何かが“嬉しい”。",
+            "今日の光は、ちょっとだけ“戻って”くる。",
+            "盛り上がった後に無音。そこが本番。",
+            "笑っていい。…笑った分だけ、夜に思い出す。"
+          ]
+        },
       ];
-      const linesP = [
-        "気配はあるが断続的。壁際注意。",
-        "一定間隔で反応。人の動きっぽい周期。",
-        "反応が偏る。左側に寄ってる可能性。",
-        "突然の無反応→急上昇。近距離通過の疑い。"
-      ];
-      const linesR = [
-        "RK-1ノイズは薄め。今日は静かな日。",
-        "帯域がザラつく。録音は一応回す価値あり。",
-        "瞬間的なスパイク。金属音に似た波形。",
-        "ノイズが“言葉っぽく”見えるが要再検証。"
-      ];
-      const linesI = [
-        "安定。今日は演出より素材撮り向き。",
-        "揺らぎあり。結果は“ブレるほど面白い”日。",
-        "やや不安定。検証向き、ただし焦らない。",
-        "安定度が極端。設定見直しor神回の予感。"
-      ];
 
-      // 総合判定（ゆるい）
-      const total = Math.round((dop + pir + rk1 + inf) / 4);
-      const chip = total >= 80 ? "本日は“濃いめ”" :
-                   total >= 60 ? "本日は“中濃”" :
-                   total >= 40 ? "本日は“薄め”" : "本日は“静寂”";
+      const heroIndex = seed % chars.length;
+      const hero = chars[heroIndex];
 
-      const status = total >= 80 ? "異常反応：高（焦らず記録）" :
-                     total >= 60 ? "異常反応：中（継続観測）" :
-                     total >= 40 ? "異常反応：低（環境要因が主）" :
-                                   "異常反応：なし（平常運転）";
+      const cseed = hash32("RIKEOKA_HERO_COMMENT|" + todayKey());
+      const comment = pick(hero.comments, cseed);
 
-      return {
-        chip,
-        status,
-        dop, pir, rk1, inf,
-        tD: pick(linesD, prng(seed ^ 0x11111111)),
-        tP: pick(linesP, prng(seed ^ 0x22222222)),
-        tR: pick(linesR, prng(seed ^ 0x33333333)),
-        tI: pick(linesI, prng(seed ^ 0x44444444)),
-      };
+      return { hero, comment };
     }
 
-    // UI反映
-    function applyLog(L){
-      document.getElementById("logChip").textContent = L.chip;
-      document.getElementById("logStatus").textContent = L.status;
+    // UI制御
+    const heroBtn = document.getElementById("heroBtn");
+    const heroArea = document.getElementById("heroArea");
+    const heroState = document.getElementById("heroState");
 
-      document.getElementById("mDoppler").textContent = `${L.dop}%`;
-      document.getElementById("mPir").textContent     = `${L.pir}%`;
-      document.getElementById("mRk1").textContent     = `${L.rk1}%`;
-      document.getElementById("mInf").textContent     = `${L.inf}%`;
+    const heroChip = document.getElementById("heroChip");
+    const heroStatus = document.getElementById("heroStatus");
+    const heroReveal = document.getElementById("heroReveal");
+    const heroImg = document.getElementById("heroImg");
+    const heroName = document.getElementById("heroName");
+    const heroComment = document.getElementById("heroComment");
 
-      document.getElementById("tDoppler").textContent = L.tD;
-      document.getElementById("tPir").textContent     = L.tP;
-      document.getElementById("tRk1").textContent     = L.tR;
-      document.getElementById("tInf").textContent     = L.tI;
+    let revealed = false;
 
-      document.getElementById("logNote").textContent =
-        "今日のログは“日替わり固定”です（同じ日は同じ結果／翌日変化）。";
+    function clearStageHighlight(){
+      document.querySelectorAll(".corner").forEach(el=>{
+        el.classList.remove("is-hero","is-dim");
+      });
     }
 
-    // スキャン演出
-    const scanBtn = document.getElementById("scanBtn");
-    const logArea = document.getElementById("logArea");
-    const scanState = document.getElementById("scanState");
+    function highlightHero(key){
+      const corners = [...document.querySelectorAll(".corner")];
+      corners.forEach(el=>{
+        const k = el.getAttribute("data-char");
+        if(k === key) el.classList.add("is-hero");
+        else el.classList.add("is-dim");
+      });
+      // 1.8秒後に薄い強調だけ残す（やりすぎ防止）
+      setTimeout(()=>{
+        corners.forEach(el=>{
+          el.classList.remove("is-dim");
+        });
+      }, 1800);
+    }
 
-    let scanned = false;
-
-    scanBtn.addEventListener("click", async () => {
-      if(scanned) {
-        // 2回目以降は軽く“再表示”だけ
-        scanState.textContent = "RECALL";
-        applyLog(generateLog());
-        setTimeout(()=> scanState.textContent = "READY", 700);
+    heroBtn.addEventListener("click", async () => {
+      // 2回目以降は“呼び出し”だけ（同じ日なら同じ結果）
+      if(revealed){
+        heroState.textContent = "RECALL";
+        const { hero, comment } = getTodayHero();
+        applyHero(hero, comment, false);
+        setTimeout(()=> heroState.textContent = "READY", 700);
         return;
       }
 
-      scanned = true;
-      logArea.classList.add("scanning");
-      scanState.textContent = "SCANNING";
+      revealed = true;
+      heroArea.classList.add("heroScanning");
+      heroState.textContent = "SUMMONING";
 
-      // ちょい演出（0.9秒）
-      await new Promise(r => setTimeout(r, 900));
+      // 演出：0.95秒
+      await new Promise(r => setTimeout(r, 950));
 
-      applyLog(generateLog());
+      const { hero, comment } = getTodayHero();
+      applyHero(hero, comment, true);
 
-      logArea.classList.remove("scanning");
-      scanState.textContent = "DONE";
-
-      setTimeout(()=> scanState.textContent = "READY", 900);
+      heroArea.classList.remove("heroScanning");
+      heroState.textContent = "DONE";
+      setTimeout(()=> heroState.textContent = "READY", 900);
     });
+
+    function applyHero(hero, comment, withAnim){
+      heroChip.textContent = hero.chip;
+      heroStatus.textContent = "選出完了";
+
+      heroImg.src = hero.img;
+      heroImg.alt = hero.name;
+      heroName.textContent = hero.name;
+      heroComment.textContent = comment;
+
+      // reveal
+      if(withAnim){
+        heroReveal.style.opacity = "0";
+        heroReveal.classList.remove("heroReveal");
+        // リフローでアニメ再発火
+        void heroReveal.offsetWidth;
+        heroReveal.classList.add("heroReveal");
+        heroReveal.style.opacity = "1";
+      }else{
+        heroReveal.style.opacity = "1";
+      }
+
+      clearStageHighlight();
+      highlightHero(hero.key);
+    }
   </script>
 </body>
 </html>
