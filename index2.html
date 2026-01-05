@@ -506,19 +506,31 @@
       return arr[idx];
     }
 
-    // 今日の主役を日替わり固定で決める
+    function getForcedHeroKey(){
+      const p = new URLSearchParams(location.search);
+      const v = (p.get("hero") || "").toLowerCase();
+      const allowed = new Set(["pir","doppler","rk1","infinity"]);
+      return allowed.has(v) ? v : null;
+    }
+
+    // 今日の主役を日替わり固定で決める（ただし ?hero=xxx があればそれを優先）
     function getTodayHero(){
-      const seed = hash32("RIKEOKA_HERO|" + todayKey());
       const chars = [
         {
           key:"pir",
           name:"PIR",
           img:"./material/pir.png",
-          comments:[
-            "背後、今ちょっと“空いてない”。…振り向くのは任せる。",
-            "動いてないのに反応する日。つまり“誰か”は動いてる。",
-            "安心して。怖いのは最初だけ。…慣れた頃が一番危ない。",
-            "今日の気配は近い。近いほど、音はしない。"
+          chats: [
+            ["🟡「あ！　ひとりきたよ！」", "🟢「ほんとだ！　ひさしぶり！」", "🔵「……“ひさしぶり”なの？」"],
+            ["🟢「ねぇねぇ、ここだよね？」", "🟡「うん！　いつものばしょ！」", "🔵「……いつから“いつも”なの？」"],
+            ["🟡「だいじょうぶだよ〜」", "🟢「こわくないよ〜！」", "🔵「……じゃあ、なんでかくれてるの？」"],
+            ["🟢「いーち、にー、さーん！」", "🟡「あれ？　あってる？」", "🔵「……“だれ”を数えたの？」"],
+            ["🟡「しーっ、きこえる？」", "🟢「うん、あるいてる！」", "🔵「……ここ、うごけないのに」"],
+            ["🟢「またきてくれてうれしい！」", "🟡「えへへ！」", "🔵「……“また”って言っちゃだめだよ」"],
+            ["🟡「ねぇねぇ、みちゃった？」", "🟢「うん、みえた！」", "🔵「……みえなくなるまで、みるの？」"],
+            ["🟢「きょうは、ちがうね」", "🟡「うん、ちがう！」", "🔵「……なにが“足りない”の？」"],
+            ["🟡「あそぼー！」", "🟢「いいよー！」", "🔵「……かえりかた、わかる？」"],
+            ["🟢「もうすぐだよ！」", "🟡「うん、もうすぐ！」", "🔵「……“なに”がくるの？」"],
           ]
         },
         {
@@ -556,11 +568,25 @@
         },
       ];
 
-      const heroIndex = seed % chars.length;
-      const hero = chars[heroIndex];
-
-      const cseed = hash32("RIKEOKA_HERO_COMMENT|" + todayKey());
-      const comment = pick(hero.comments, cseed);
+      const forcedKey = getForcedHeroKey();
+      let hero;
+    
+      if(forcedKey){
+        hero = chars.find(c => c.key === forcedKey);
+      }else{
+        const seed = hash32("RIKEOKA_HERO|" + todayKey());
+        hero = chars[seed % chars.length];
+      }
+    
+      const cseed = hash32("RIKEOKA_HERO_CHAT|" + todayKey());
+      let comment;
+    
+      if(hero.key === "pir"){
+        const lines = pick(hero.chats, cseed);
+        comment = lines.join("<br>");
+      }else{
+        comment = pick(hero.comments, cseed);
+      }
 
       return { hero, comment };
     }
@@ -597,7 +623,7 @@
       heroImg.src = hero.img;
       heroImg.alt = hero.name;
       heroName.textContent = hero.name;
-      heroComment.textContent = comment;
+      heroComment.innerHTML = comment;
 
       // 常に表示（ロード後に出す）
       heroReveal.style.display = "flex";
