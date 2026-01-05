@@ -144,11 +144,18 @@
       filter: drop-shadow(0 10px 26px rgba(0,0,0,.65));
     }
 
-    /* 配置（四隅：catchphraseの周り） */
-    .tl{ top: 6%; left: 5%; }
-    .tr{ top: 6%; right: 5%; }
-    .bl{ bottom: 6%; left: 5%; }
-    .br{ bottom: 6%; right: 5%; }
+    /* 四隅の基本位置 */
+    .tl{ top: 5%; left: 5%; }
+    .tr{ top: 5%; right: 5%; }
+    
+    /* 下は “より下＆外側” に寄せる */
+    .bl{ bottom: 2%; left: 4%; }
+    .br{ bottom: 2%; right: 4%; }
+    
+    /* 下の2体は少し小さくして被りにくく */
+    .bl, .br{
+      width: clamp(130px, 18vw, 200px);
+    }
 
     /* アニメ：外 → 内 + フェードイン（方向別） */
     @keyframes inTL {
@@ -213,25 +220,22 @@
         <img src="./material/catchphrase.png" alt="にガチで挑む 日本唯一の心霊系ch">
       </div>
 
-      <!-- 四隅：キャラ + 名前（ファイル名は合わせて変更） -->
+      <!-- 上：Doppler / PIR（そのまま） -->
       <div class="corner tl">
         <img class="char" src="./material/doppler.png" alt="Doppler">
-        <img class="name" src="./material/dopplerName.png" alt="Doppler">
       </div>
-
+      
       <div class="corner tr">
         <img class="char" src="./material/pir.png" alt="PIR">
-        <img class="name" src="./material/pirName.png" alt="PIR">
       </div>
-
+      
+      <!-- 下：RK1 / Infinity（ここが移動） -->
       <div class="corner bl">
         <img class="char" src="./material/rk1.png" alt="Nodger RK-1">
-        <img class="name" src="./material/rk1Name.png" alt="Nodger RK-1">
       </div>
-
+      
       <div class="corner br">
         <img class="char" src="./material/infinity.png" alt="Infinity Cube">
-        <img class="name" src="./material/infinityName.png" alt="Infinity Cube">
       </div>
     </section>
   </main>
