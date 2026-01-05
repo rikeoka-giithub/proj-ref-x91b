@@ -199,24 +199,21 @@
 
     /* タイトル横並び */
     .titleRow{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(14px, 3vw, 28px);
+      gap: clamp(10px, 2vw, 18px);
     }
     
     /* ch-logo 側 */
     .titleLogo{
-      width: clamp(64px, 10vw, 110px);
+      width: clamp(42px, 6vw, 68px); /* ← ここを小さく */
       height: auto;
       filter:
-        drop-shadow(0 0 18px rgba(255,255,255,.25))
-        drop-shadow(0 12px 28px rgba(0,0,0,.6));
+        drop-shadow(0 0 12px rgba(255,255,255,.25))
+        drop-shadow(0 8px 20px rgba(0,0,0,.6));
     }
     
     /* RIKEOKA-font 側 */
     .titleText{
-      width: min(420px, 70vw);
+      width: min(460px, 76vw); /* ← 少しだけ大きく */
       height: auto;
       filter: drop-shadow(0 14px 30px rgba(0,0,0,.6));
     }
