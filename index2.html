@@ -45,6 +45,7 @@
       position:relative;
       width:min(980px, 94vw);
       padding: var(--pad);
+      padding-bottom: calc(var(--pad) + 86px); /* ★下部ボタン分の余白 */
       border-radius: var(--card-radius);
       background: rgba(15,15,15,.38);
       box-shadow: var(--shadow);
@@ -296,7 +297,6 @@
         0 0 26px rgba(255,255,255,.12);
     }
 
-    /* 未選出の間だけ、微パルスで“押して”を出す */
     @keyframes ctaPulse {
       0%,100% { box-shadow: 0 12px 34px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.06) inset; }
       50%     { box-shadow: 0 14px 40px rgba(0,0,0,.42), 0 0 22px rgba(255,255,255,.10), 0 0 0 1px rgba(255,255,255,.08) inset; }
@@ -455,10 +455,143 @@
     .heroScanning .heroIcon{ animation: pulse .7s ease-in-out infinite; }
     .heroReveal{ animation: glitchIn .55s cubic-bezier(.2,.9,.2,1) forwards; }
 
+    /* =========================
+       ★復活：画面下部のボタン群（内部アニメ付き）
+       ========================= */
+    .bottomNav{
+      position: absolute;
+      left: var(--pad);
+      right: var(--pad);
+      bottom: var(--pad);
+      z-index: 20;
+
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+
+      padding: 10px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.28);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 14px 44px rgba(0,0,0,.45);
+    }
+
+    .navBtn{
+      position: relative;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+
+      padding: 14px 14px;
+      border-radius: 16px;
+      color:#fff;
+      text-decoration:none;
+
+      border: 1px solid rgba(255,255,255,.16);
+      background:
+        radial-gradient(120% 120% at 20% 20%, rgba(255,255,255,.10), transparent 58%),
+        linear-gradient(to bottom, rgba(255,255,255,.05), rgba(0,0,0,.40));
+      box-shadow:
+        0 12px 30px rgba(0,0,0,.35),
+        0 0 0 1px rgba(255,255,255,.05) inset;
+
+      overflow:hidden;
+      transition: transform .12s ease, border-color .12s ease, filter .12s ease, box-shadow .12s ease;
+      cursor:pointer;
+    }
+    .navBtn:hover{
+      border-color: rgba(255,255,255,.26);
+      filter: brightness(1.04);
+      box-shadow:
+        0 16px 38px rgba(0,0,0,.45),
+        0 0 28px rgba(255,255,255,.10),
+        0 0 0 1px rgba(255,255,255,.07) inset;
+    }
+    .navBtn:active{ transform: translateY(1px) scale(.995); }
+
+    /* 内部アニメ①：光のスイープ */
+    @keyframes sweep {
+      0%   { transform: translateX(-70%) skewX(-18deg); opacity: 0; }
+      20%  { opacity: .9; }
+      60%  { opacity: .55; }
+      100% { transform: translateX(120%) skewX(-18deg); opacity: 0; }
+    }
+    .navBtn::before{
+      content:"";
+      position:absolute;
+      top:-30%;
+      bottom:-30%;
+      left:-30%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+      opacity: 0;
+      pointer-events:none;
+    }
+    .navBtn:hover::before{
+      opacity: 1;
+      animation: sweep .85s ease-out 1;
+    }
+
+    /* 内部アニメ②：走査線（常時うっすら） */
+    @keyframes scanline {
+      0%   { transform: translateX(-120%); opacity: .0; }
+      25%  { opacity: .25; }
+      50%  { opacity: .12; }
+      100% { transform: translateX(180%); opacity: 0; }
+    }
+    .navBtn::after{
+      content:"";
+      position:absolute;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      left: 0;
+      background: rgba(255,255,255,.22);
+      filter: blur(.2px);
+      opacity: .0;
+      animation: scanline 2.6s ease-in-out infinite;
+      pointer-events:none;
+    }
+
+    .navLeft{
+      display:flex;
+      flex-direction:column;
+      gap: 2px;
+      min-width:0;
+    }
+    .navTitle{
+      font-size: 13px;
+      letter-spacing:.05em;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .navSub{
+      font-size: 12px;
+      opacity: .72;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .navArrow{
+      flex: 0 0 auto;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      opacity: .92;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset;
+    }
+
     @media (max-width: 520px){
       .corner{ width: 34vw; }
       .catchphrase{ inset: 12% 6%; }
       .heroThumb{ width: 76px; height: 76px; }
+      .bottomNav{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -528,7 +661,6 @@
             <div class="heroStatus" id="heroStatus">未選出</div>
           </div>
 
-          <!-- ★未選出は表示しない -->
           <div class="heroShow heroReveal" id="heroReveal" style="display:none; opacity:0;">
             <div class="heroThumb">
               <img id="heroImg" src="" alt="hero">
@@ -546,6 +678,25 @@
       </div>
     </section>
     <!-- ▲ -->
+
+    <!-- ★復活：画面下部のボタン（ここだけhrefを好きに変更OK） -->
+    <nav class="bottomNav" aria-label="quick actions">
+      <a class="navBtn" href="./album.html">
+        <div class="navLeft">
+          <div class="navTitle">アルバム</div>
+          <div class="navSub">オフ会の写真を見る</div>
+        </div>
+        <div class="navArrow">OPEN ▶</div>
+      </a>
+
+      <a class="navBtn" href="#top" id="toTopBtn">
+        <div class="navLeft">
+          <div class="navTitle">トップへ</div>
+          <div class="navSub">このページの先頭へ戻る</div>
+        </div>
+        <div class="navArrow">UP ▲</div>
+      </a>
+    </nav>
   </main>
 
   <script>
@@ -553,6 +704,12 @@
     window.addEventListener("load", () => {
       document.getElementById("app").classList.add("play");
       setHeroDate();
+    });
+
+    // トップへ（なめらかスクロール）
+    document.getElementById("toTopBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
     function setHeroDate(){
@@ -564,7 +721,6 @@
       el.textContent = `${y}.${m}.${day}`;
     }
 
-    // 文字列→安定seed
     function hash32(str){
       let h = 2166136261;
       for(let i=0;i<str.length;i++){
@@ -587,7 +743,6 @@
       return arr[idx];
     }
 
-    // 今日の主役を日替わり固定で決める
     function getTodayHero(){
       const seed = hash32("RIKEOKA_HERO|" + todayKey());
       const chars = [
@@ -646,7 +801,6 @@
       return { hero, comment };
     }
 
-    // UI制御
     const heroBtn = document.getElementById("heroBtn");
     const heroArea = document.getElementById("heroArea");
     const heroState = document.getElementById("heroState");
@@ -679,7 +833,6 @@
     }
 
     heroBtn.addEventListener("click", async () => {
-      // 2回目以降は“呼び出し”（同日同結果）
       if(revealed){
         heroState.innerHTML = 'RECALL <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>';
         const { hero, comment } = getTodayHero();
@@ -689,7 +842,7 @@
       }
 
       revealed = true;
-      heroBtn.classList.remove("is-cta"); // 押したら“押して”演出は止める
+      heroBtn.classList.remove("is-cta");
       heroArea.classList.add("heroScanning");
       heroState.innerHTML = 'SUMMONING <span aria-hidden="true" style="opacity:.9; margin-left:6px;">▶</span>';
 
@@ -712,7 +865,6 @@
       heroName.textContent = hero.name;
       heroComment.textContent = comment;
 
-      // 未選出は表示しない → 選出したら表示
       heroReveal.style.display = "flex";
 
       if(withAnim){
