@@ -135,27 +135,13 @@
       display:block;
       filter: drop-shadow(0 18px 36px rgba(0,0,0,.65));
     }
-    .corner .name{
-      margin-top: 6px;
-      width: 100%;
-      height:auto;
-      display:block;
-      opacity: .95;
-      filter: drop-shadow(0 10px 26px rgba(0,0,0,.65));
-    }
 
     /* 四隅の基本位置 */
     .tl{ top: 5%; left: 5%; }
     .tr{ top: 5%; right: 5%; }
-    
-    /* 下は “より下＆外側” に寄せる */
     .bl{ bottom: 2%; left: 4%; }
     .br{ bottom: 2%; right: 4%; }
-    
-    /* 下の2体は少し小さくして被りにくく */
-    .bl, .br{
-      width: clamp(130px, 18vw, 200px);
-    }
+    .bl, .br{ width: clamp(130px, 18vw, 200px); }
 
     /* アニメ：外 → 内 + フェードイン（方向別） */
     @keyframes inTL {
@@ -191,10 +177,232 @@
     .play .bl{ animation: inBL .75s cubic-bezier(.2,.9,.2,1) .32s forwards, floaty 3.6s ease-in-out 1.2s infinite; }
     .play .br{ animation: inBR .75s cubic-bezier(.2,.9,.2,1) .46s forwards, floaty 4.6s ease-in-out 1.3s infinite; }
 
-    /* モバイルで被りやすいので少し縮める */
+    /* =========================
+       ここから：案A「本日の検出ログ」
+       既存レイアウトは崩さず、下に1ブロック追加
+       ========================= */
+    .logWrap{
+      margin-top: 14px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      position: relative;
+    }
+
+    .logHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(to bottom, rgba(255,255,255,.05), transparent);
+    }
+
+    .logTitle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 0;
+    }
+
+    .logBadge{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 0 16px rgba(255,255,255,.18);
+    }
+
+    .logTitleText{
+      font-size: 13px;
+      letter-spacing: .05em;
+      opacity: .95;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+
+    .logDate{
+      font-size: 12px;
+      opacity: .75;
+      white-space: nowrap;
+    }
+
+    .logBody{
+      padding: 14px;
+      display:grid;
+      gap: 12px;
+    }
+
+    .scanBtn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.38);
+      color:#fff;
+      padding: 12px 14px;
+      border-radius: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .scanBtn:active{ transform: translateY(1px) scale(.995); }
+    .scanBtn:hover{ background: rgba(0,0,0,.48); border-color: rgba(255,255,255,.22); }
+
+    .scanLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .scanIcon{
+      width: 34px; height: 34px;
+      border-radius: 12px;
+      display:grid;
+      place-items:center;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      position: relative;
+      overflow:hidden;
+    }
+    .scanIcon::after{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 55%);
+      transform: rotate(20deg);
+    }
+    .scanText{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+    .scanText strong{
+      font-size: 13px;
+      letter-spacing:.04em;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .scanText span{
+      font-size: 12px;
+      opacity: .72;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .scanRight{
+      font-size: 12px;
+      opacity: .8;
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.22);
+      white-space: nowrap;
+    }
+
+    .logCard{
+      border-radius: 16px;
+      background: rgba(0,0,0,.32);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 12px 12px 12px;
+      overflow:hidden;
+    }
+
+    .logLine1{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 8px;
+    }
+
+    .logChip{
+      font-size: 12px;
+      opacity: .9;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      white-space: nowrap;
+    }
+
+    .logStatus{
+      font-size: 12px;
+      opacity: .72;
+      white-space: nowrap;
+    }
+
+    .logGrid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric{
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      position: relative;
+      overflow:hidden;
+    }
+    .metric::after{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,.10), transparent 55%);
+      transform: rotate(-10deg);
+      pointer-events:none;
+    }
+    .metric .k{
+      font-size: 11px;
+      letter-spacing:.08em;
+      opacity:.72;
+      margin-bottom: 4px;
+    }
+    .metric .v{
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing:.02em;
+    }
+    .metric .n{
+      font-size: 12px;
+      opacity:.78;
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+
+    .logNote{
+      font-size: 12px;
+      opacity: .75;
+      line-height: 1.55;
+    }
+
+    /* スキャン演出 */
+    @keyframes scanPulse {
+      0% { box-shadow: 0 0 0 rgba(255,255,255,.0); }
+      50%{ box-shadow: 0 0 22px rgba(255,255,255,.12); }
+      100%{ box-shadow: 0 0 0 rgba(255,255,255,.0); }
+    }
+    .scanning .scanIcon{
+      animation: scanPulse .7s ease-in-out infinite;
+    }
+    .scanning .scanRight{
+      opacity: 1;
+    }
+    .hidden{ display:none !important; }
+
     @media (max-width: 520px){
       .corner{ width: 34vw; }
       .catchphrase{ inset: 12% 6%; }
+      .logGrid{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -208,7 +416,6 @@
         <span class="brandDot" aria-hidden="true"></span>
         <span>RIKEOKA / OFF会 特典ページ</span>
       </div>
-      <div class="pill">ACCESS: <span id="accessCount">4</span></div>
     </div>
 
     <div class="title">
@@ -220,30 +427,251 @@
         <img src="./material/catchphrase.png" alt="にガチで挑む 日本唯一の心霊系ch">
       </div>
 
-      <!-- 上：PIR / Doppler（そのまま） -->
+      <!-- 上：PIR / Doppler -->
       <div class="corner tl">
         <img class="char" src="./material/pir.png" alt="PIR">
       </div>
-      
+
       <div class="corner tr">
         <img class="char" src="./material/doppler.png" alt="Doppler">
       </div>
-      
-      <!-- 下：RK1 / Infinity（ここが移動） -->
+
+      <!-- 下：RK1 / Infinity -->
       <div class="corner bl">
         <img class="char" src="./material/rk1.png" alt="Nodger RK-1">
       </div>
-      
+
       <div class="corner br">
         <img class="char" src="./material/infinity.png" alt="Infinity Cube">
       </div>
     </section>
+
+    <!-- ▼ 追加：本日の検出ログ（案A） -->
+    <section class="logWrap" aria-label="daily log">
+      <div class="logHead">
+        <div class="logTitle">
+          <span class="logBadge" aria-hidden="true"></span>
+          <div class="logTitleText">本日の検出ログ</div>
+        </div>
+        <div class="logDate" id="logDate">----</div>
+      </div>
+
+      <div class="logBody" id="logArea">
+        <button class="scanBtn" id="scanBtn" type="button">
+          <div class="scanLeft">
+            <div class="scanIcon" aria-hidden="true">⌁</div>
+            <div class="scanText">
+              <strong>スキャン開始</strong>
+              <span>今日の反応を解析してログを生成</span>
+            </div>
+          </div>
+          <div class="scanRight" id="scanState">READY</div>
+        </button>
+
+        <div class="logCard" id="logCard">
+          <div class="logLine1">
+            <div class="logChip" id="logChip">—</div>
+            <div class="logStatus" id="logStatus">未解析</div>
+          </div>
+
+          <div class="logGrid">
+            <div class="metric">
+              <div class="k">DOPPLER</div>
+              <div class="v" id="mDoppler">--</div>
+              <div class="n" id="tDoppler">—</div>
+            </div>
+            <div class="metric">
+              <div class="k">PIR</div>
+              <div class="v" id="mPir">--</div>
+              <div class="n" id="tPir">—</div>
+            </div>
+            <div class="metric">
+              <div class="k">RK-1</div>
+              <div class="v" id="mRk1">--</div>
+              <div class="n" id="tRk1">—</div>
+            </div>
+            <div class="metric">
+              <div class="k">INFINITY</div>
+              <div class="v" id="mInf">--</div>
+              <div class="n" id="tInf">—</div>
+            </div>
+          </div>
+
+          <div class="logNote" id="logNote" style="margin-top:10px;">
+            ※「スキャン開始」を押すと、今日の日付に基づいた“日替わりログ”が生成されます。
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ▲ 追加ここまで -->
   </main>
 
   <script>
-    // ページロード後にアニメ開始
+    // ページロード後にアニメ開始 + 日付表示
     window.addEventListener("load", () => {
       document.getElementById("app").classList.add("play");
+      setLogDate();
+    });
+
+    function setLogDate(){
+      const el = document.getElementById("logDate");
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      el.textContent = `${y}.${m}.${day}`;
+    }
+
+    // 文字列→安定した乱数（軽いハッシュ）
+    function hash32(str){
+      let h = 2166136261;
+      for(let i=0;i<str.length;i++){
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    }
+    // 0..1 の疑似乱数
+    function prng(seed){
+      // xorshift32
+      let x = seed || 123456789;
+      x ^= x << 13; x >>>= 0;
+      x ^= x >> 17; x >>>= 0;
+      x ^= x << 5;  x >>>= 0;
+      return (x >>> 0) / 4294967296;
+    }
+
+    function todayKey(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      // 同じ日に同じ結果、翌日変わる
+      return `${y}-${m}-${day}`;
+    }
+
+    function pick(arr, r){
+      return arr[Math.floor(r * arr.length) % arr.length];
+    }
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function generateLog(){
+      const seed = hash32("RIKEOKA|" + todayKey());
+      // 4つ分の乱数を作る
+      const r1 = prng(seed);
+      const r2 = prng(seed ^ 0x9e3779b9);
+      const r3 = prng(seed ^ 0x85ebca6b);
+      const r4 = prng(seed ^ 0xc2b2ae35);
+
+      const grade = (x)=>{
+        if(x < .18) return "SILENT";
+        if(x < .42) return "LOW";
+        if(x < .72) return "MID";
+        if(x < .90) return "HIGH";
+        return "MAX";
+      };
+
+      const dop = Math.round( clamp(12 + r1*88, 0, 100) );
+      const pir = Math.round( clamp(10 + r2*90, 0, 100) );
+      const rk1 = Math.round( clamp(8  + r3*92, 0, 100) );
+      const inf = Math.round( clamp(20 + r4*80, 0, 100) );
+
+      const linesD = [
+        "微弱な位相ズレ。人影“っぽさ”は低め。",
+        "反応は素直。動体というより空気の揺れ寄り。",
+        "短いピークが連続。視線を感じる系のノイズ。",
+        "急に落ち着く瞬間あり。来てる/去ってるが混ざる。"
+      ];
+      const linesP = [
+        "気配はあるが断続的。壁際注意。",
+        "一定間隔で反応。人の動きっぽい周期。",
+        "反応が偏る。左側に寄ってる可能性。",
+        "突然の無反応→急上昇。近距離通過の疑い。"
+      ];
+      const linesR = [
+        "RK-1ノイズは薄め。今日は静かな日。",
+        "帯域がザラつく。録音は一応回す価値あり。",
+        "瞬間的なスパイク。金属音に似た波形。",
+        "ノイズが“言葉っぽく”見えるが要再検証。"
+      ];
+      const linesI = [
+        "安定。今日は演出より素材撮り向き。",
+        "揺らぎあり。結果は“ブレるほど面白い”日。",
+        "やや不安定。検証向き、ただし焦らない。",
+        "安定度が極端。設定見直しor神回の予感。"
+      ];
+
+      // 総合判定（ゆるい）
+      const total = Math.round((dop + pir + rk1 + inf) / 4);
+      const chip = total >= 80 ? "本日は“濃いめ”" :
+                   total >= 60 ? "本日は“中濃”" :
+                   total >= 40 ? "本日は“薄め”" : "本日は“静寂”";
+
+      const status = total >= 80 ? "異常反応：高（焦らず記録）" :
+                     total >= 60 ? "異常反応：中（継続観測）" :
+                     total >= 40 ? "異常反応：低（環境要因が主）" :
+                                   "異常反応：なし（平常運転）";
+
+      return {
+        chip,
+        status,
+        dop, pir, rk1, inf,
+        tD: pick(linesD, prng(seed ^ 0x11111111)),
+        tP: pick(linesP, prng(seed ^ 0x22222222)),
+        tR: pick(linesR, prng(seed ^ 0x33333333)),
+        tI: pick(linesI, prng(seed ^ 0x44444444)),
+      };
+    }
+
+    // UI反映
+    function applyLog(L){
+      document.getElementById("logChip").textContent = L.chip;
+      document.getElementById("logStatus").textContent = L.status;
+
+      document.getElementById("mDoppler").textContent = `${L.dop}%`;
+      document.getElementById("mPir").textContent     = `${L.pir}%`;
+      document.getElementById("mRk1").textContent     = `${L.rk1}%`;
+      document.getElementById("mInf").textContent     = `${L.inf}%`;
+
+      document.getElementById("tDoppler").textContent = L.tD;
+      document.getElementById("tPir").textContent     = L.tP;
+      document.getElementById("tRk1").textContent     = L.tR;
+      document.getElementById("tInf").textContent     = L.tI;
+
+      document.getElementById("logNote").textContent =
+        "今日のログは“日替わり固定”です（同じ日は同じ結果／翌日変化）。";
+    }
+
+    // スキャン演出
+    const scanBtn = document.getElementById("scanBtn");
+    const logArea = document.getElementById("logArea");
+    const scanState = document.getElementById("scanState");
+
+    let scanned = false;
+
+    scanBtn.addEventListener("click", async () => {
+      if(scanned) {
+        // 2回目以降は軽く“再表示”だけ
+        scanState.textContent = "RECALL";
+        applyLog(generateLog());
+        setTimeout(()=> scanState.textContent = "READY", 700);
+        return;
+      }
+
+      scanned = true;
+      logArea.classList.add("scanning");
+      scanState.textContent = "SCANNING";
+
+      // ちょい演出（0.9秒）
+      await new Promise(r => setTimeout(r, 900));
+
+      applyLog(generateLog());
+
+      logArea.classList.remove("scanning");
+      scanState.textContent = "DONE";
+
+      setTimeout(()=> scanState.textContent = "READY", 900);
     });
   </script>
 </body>
