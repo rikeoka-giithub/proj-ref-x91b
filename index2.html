@@ -456,9 +456,17 @@
     .heroReveal{ animation: glitchIn .55s cubic-bezier(.2,.9,.2,1) forwards; }
 
     @media (max-width: 520px){
-      .corner{ width: 34vw; }
-      .catchphrase{ inset: 12% 6%; }
-      .heroThumb{ width: 76px; height: 76px; }
+      .catchphrase{ inset: 14% 8%; } /* キャッチを少し内側へ */
+      .corner{
+        width: clamp(64px, 18vw, 120px);
+        z-index: 2; /* キャッチより後ろ */
+      }
+      .bl, .br{ width: clamp(56px, 16vw, 108px); }
+    
+      .tl{ top: 3%; left: 3%; }
+      .tr{ top: 3%; right: 3%; }
+      .bl{ bottom: 1%; left: 3%; }
+      .br{ bottom: 1%; right: 3%; }
     }
 
     /* =========================
