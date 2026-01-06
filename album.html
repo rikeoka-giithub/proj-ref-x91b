@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RIKEOKA / オフ会アルバム</title>
+
+  <style>
+    :root{
+      --pad: clamp(14px, 2.4vw, 28px);
+      --card-radius: 22px;
+      --glow: 0 0 24px rgba(255,255,255,.08);
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      color:#fff;
+      background:#000;
+      min-height:100svh;
+      display:grid;
+      place-items:center;
+      overflow-x:hidden;
+    }
+
+    /* ▼トップと同じ背景処理 */
+    .bg{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1200px 600px at 20% 20%, rgba(255,255,255,.10), transparent 60%),
+        radial-gradient(900px 500px at 80% 20%, rgba(255,80,80,.07), transparent 55%),
+        radial-gradient(900px 700px at 50% 80%, rgba(0,180,255,.06), transparent 55%),
+        url("./material/background.png") center/cover no-repeat;
+      filter: brightness(1.08) contrast(1.08) saturate(1.05);
+      transform: scale(1.02);
+    }
+    .bg::after{
+      content:"";
+      position:absolute; inset:0;
+      background: rgba(0,0,0,.55);
+    }
+
+    .frame{
+      position:relative;
+      width:min(980px, 94vw);
+      padding: var(--pad);
+      border-radius: var(--card-radius);
+      background: rgba(15,15,15,.38);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 14px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.42);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--glow);
+      font-size: 13px;
+      letter-spacing:.02em;
+      opacity:.92;
+    }
+    .brandDot{
+      width:26px; height:26px;
+      border-radius: 999px;
+      background: url("./material/ch-logo.png") center/cover no-repeat;
+      border: 1px solid rgba(255,255,255,.2);
+    }
+
+    .head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 10px;
+      margin: 10px 0 14px;
+    }
+    .hgroup{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+    }
+    .title{
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: .06em;
+    }
+    .sub{
+      font-size: 12px;
+      opacity: .78;
+      letter-spacing: .02em;
+      line-height: 1.4;
+    }
+
+    .back{
+      text-decoration:none;
+      color:#fff;
+      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      box-shadow: var(--glow);
+      white-space: nowrap;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .back:hover{ transform: translateY(-1px); background: rgba(255,255,255,.08); }
+    .back:active{ transform: translateY(0px); }
+
+    /* ▼ギャラリー */
+    .galleryWrap{
+      border-radius: 18px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+
+    .galleryHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(to bottom, rgba(255,255,255,.05), transparent);
+    }
+    .count{
+      font-size: 12px;
+      opacity: .8;
+      letter-spacing: .04em;
+    }
+
+    .gallery{
+      padding: 14px;
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .thumb{
+      position:relative;
+      border-radius: 14px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+    }
+    .thumb:hover{
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 16px 34px rgba(0,0,0,.45);
+    }
+
+    .thumb img{
+      width:100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display:block;
+      transform: translateZ(0);
+    }
+
+    .thumb::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(220px 140px at 50% 40%, rgba(255,255,255,.10), transparent 55%);
+      opacity: .0;
+      transition: opacity .18s ease;
+      pointer-events:none;
+    }
+    .thumb:hover::after{ opacity:.9; }
+
+    /* ▼モーダル */
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      place-items:center;
+      z-index: 999;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(6px);
+      padding: 16px;
+    }
+    .modal.is-open{ display:grid; }
+
+    .modalCard{
+      width: min(980px, 96vw);
+      max-height: 92svh;
+      border-radius: 18px;
+      background: rgba(10,10,10,.66);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 22px 80px rgba(0,0,0,.65);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .modalTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(to bottom, rgba(255,255,255,.05), transparent);
+    }
+    .modalLabel{
+      font-size: 12px;
+      opacity: .8;
+      letter-spacing:.04em;
+      white-space: nowrap;
+    }
+    .modalBtns{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .iconBtn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      border-radius: 12px;
+      padding: 8px 10px;
+      cursor:pointer;
+      font-size: 12px;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .iconBtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); }
+    .iconBtn:active{ transform: translateY(0px); }
+
+    .modalBody{
+      padding: 12px;
+      display:grid;
+      place-items:center;
+      background: rgba(0,0,0,.25);
+    }
+    .modalImg{
+      width: 100%;
+      height: auto;
+      max-height: calc(92svh - 54px);
+      object-fit: contain;
+      display:block;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+
+    @media (max-width: 520px){
+      .gallery{ grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+      .title{ font-size: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg" aria-hidden="true"></div>
+
+  <main class="frame" id="app">
+    <div class="topbar">
+      <div class="pill">
+        <span class="brandDot" aria-hidden="true"></span>
+        <span>RIKEOKA / オフ会 特典ページ</span>
+      </div>
+    </div>
+
+    <div class="head">
+      <div class="hgroup">
+        <div class="title">OFF会 Album</div>
+        <div class="sub">グリッドからタップで拡大表示できるよ。<br>（PCは ← → / Esc 対応）</div>
+      </div>
+      <a class="back" href="./index.html">← トップへ戻る</a>
+    </div>
+
+    <section class="galleryWrap" aria-label="album gallery">
+      <div class="galleryHead">
+        <div class="count" id="countText">Loading...</div>
+        <div class="count" id="hintText">クリック / タップで拡大</div>
+      </div>
+
+      <div class="gallery" id="gallery"></div>
+    </section>
+  </main>
+
+  <!-- ▼ モーダル -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-label="photo viewer">
+      <div class="modalTop">
+        <div class="modalLabel" id="modalLabel">photo</div>
+        <div class="modalBtns">
+          <button class="iconBtn" id="prevBtn" type="button">←</button>
+          <button class="iconBtn" id="nextBtn" type="button">→</button>
+          <button class="iconBtn" id="closeBtn" type="button">閉じる</button>
+        </div>
+      </div>
+      <div class="modalBody">
+        <img class="modalImg" id="modalImg" src="" alt="">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== 設定：写真枚数（連番前提） ======
+    const PHOTO_COUNT = 64;
+    const PHOTO_DIR = "./photo";
+    const PHOTO_PREFIX = "photo";
+    const PHOTO_EXT = "jpeg";
+
+    const gallery = document.getElementById("gallery");
+    const countText = document.getElementById("countText");
+
+    // modal
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modalImg");
+    const modalLabel = document.getElementById("modalLabel");
+    const closeBtn = document.getElementById("closeBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let currentIndex = 1;
+
+    function srcOf(i){
+      return `${PHOTO_DIR}/${PHOTO_PREFIX}${i}.${PHOTO_EXT}`;
+    }
+
+    function openModal(i){
+      currentIndex = i;
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      renderModal();
+    }
+
+    function closeModal(){
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    function renderModal(){
+      const src = srcOf(currentIndex);
+      modalImg.src = src;
+      modalImg.alt = `photo ${currentIndex}`;
+      modalLabel.textContent = `photo${currentIndex}.${PHOTO_EXT}（${currentIndex}/${PHOTO_COUNT}）`;
+    }
+
+    function prev(){
+      currentIndex = (currentIndex <= 1) ? PHOTO_COUNT : (currentIndex - 1);
+      renderModal();
+    }
+
+    function next(){
+      currentIndex = (currentIndex >= PHOTO_COUNT) ? 1 : (currentIndex + 1);
+      renderModal();
+    }
+
+    // 生成
+    function buildGallery(){
+      const frag = document.createDocumentFragment();
+      for(let i=1;i<=PHOTO_COUNT;i++){
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "thumb";
+        btn.setAttribute("aria-label", `open photo ${i}`);
+
+        const img = document.createElement("img");
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.src = srcOf(i);
+        img.alt = `photo ${i}`;
+
+        btn.appendChild(img);
+        btn.addEventListener("click", ()=> openModal(i));
+        frag.appendChild(btn);
+      }
+      gallery.appendChild(frag);
+      countText.textContent = `全 ${PHOTO_COUNT} 枚`;
+    }
+
+    // モーダル操作
+    closeBtn.addEventListener("click", closeModal);
+    prevBtn.addEventListener("click", prev);
+    nextBtn.addEventListener("click", next);
+
+    // 背景クリックで閉じる（カード内部は閉じない）
+    modal.addEventListener("click", (e)=>{
+      if(e.target === modal) closeModal();
+    });
+
+    // キーボード操作（PC）
+    window.addEventListener("keydown", (e)=>{
+      if(!modal.classList.contains("is-open")) return;
+      if(e.key === "Escape") closeModal();
+      if(e.key === "ArrowLeft") prev();
+      if(e.key === "ArrowRight") next();
+    });
+
+    // 起動
+    buildGallery();
+  </script>
+</body>
+</html>
